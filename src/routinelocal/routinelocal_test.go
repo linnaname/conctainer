@@ -1,4 +1,4 @@
-package threadlocal
+package routinelocal
 
 import (
 	"github.com/stretchr/testify/assert"
