@@ -1,6 +1,7 @@
 package threadsafe
 
 import (
+	"github.com/valyala/fastrand"
 	"math/rand"
 	"sync"
 	"time"
@@ -10,17 +11,22 @@ type Probe struct {
 	val int
 }
 
+const (
+	limit = (1 << 31) - 1
+)
+
 var pool sync.Pool
 
 func GetProbe() int {
-	v := pool.Get()
-	if v == nil {
-		v = &Probe{}
-	}
-	r := v.(*Probe)
-	x := r.Probe()
-	pool.Put(r)
-	return x
+	//v := pool.Get()
+	//if v == nil {
+	//	v = &Probe{}
+	//}
+	//r := v.(*Probe)
+	//x := r.Probe()
+	//pool.Put(r)
+	//return x
+	return int(fastrand.Uint32() & limit)
 }
 
 func (p *Probe) Probe() int {

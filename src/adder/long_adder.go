@@ -31,18 +31,14 @@ func (l *LongAdder) Add(val int64) {
 		probe := GetProbe() & m
 		a := l.cells[probe]
 		if a == nil {
-			//log.Println("3")
 			l.longAccumulate(probe, val, uncontended)
 		} else {
 			v := atomic.LoadInt64(&a.val)
-			//log.Println("4")
 			if uncontended = a.cas(v, v+val); !uncontended {
-				//log.Println("5")
 				l.longAccumulate(probe, val, uncontended)
 			}
 		}
 	}
-	//log.Println("end")
 }
 
 func (l *LongAdder) Increment() {

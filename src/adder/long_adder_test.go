@@ -21,7 +21,7 @@ func TestLongAdder_Sum(t *testing.T) {
 		expected   int
 	}{
 		//{2000, 5237659, 2000 * 5237659},
-		{10, 100, 10 * 100},
+		{50, 50, 50 * 50},
 		//{1, 1, 1 * 1},
 		//{5, 3, 5 * 3},
 		//{999, 888, 999 * 888},
@@ -57,7 +57,7 @@ func TestAtomic_Sum(t *testing.T) {
 		expected   int
 	}{
 		//{2000, 5237659, 2000 * 5237659},
-		{500, 655351, 500 * 655351},
+		{5000, 655, 5000 * 655},
 		//{1, 1, 1 * 1},
 		//{5, 3, 5 * 3},
 		//{999, 888, 999 * 888},
@@ -104,6 +104,7 @@ func BenchmarkLongAdder_Sum(b *testing.B) {
 
 			for i := 0; i < test.routineNum; i++ {
 				wg.Add(1)
+
 				go func() {
 					for j := 0; j < test.innerLop; j++ {
 						adder.Increment()

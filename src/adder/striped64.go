@@ -12,16 +12,6 @@ type Striped64 struct {
 	cells     Cells
 }
 
-type Cells []*Cell
-
-type Cell struct {
-	val int64
-}
-
-func (c *Cell) cas(cmp, val int64) bool {
-	return atomic.CompareAndSwapInt64(&c.val, cmp, val)
-}
-
 func (s *Striped64) casBase(cmp, val int64) bool {
 	return atomic.CompareAndSwapInt64(&s.base, cmp, val)
 }
@@ -75,7 +65,7 @@ func (s *Striped64) longAccumulate(probe int, val int64, uncontended bool) {
 				collide = true
 			} else if atomic.LoadInt32(&s.cellsBusy) == 0 && s.casCellsBusy() {
 				if reflect.DeepEqual(s.cells, as) { // Expand table unless stale
-					rs := make(Cells, n<<1)
+					rs := make(Cells, n<<1, n<<2)
 					copy(rs, as)
 					s.cells = rs
 				}
@@ -96,7 +86,6 @@ func (s *Striped64) longAccumulate(probe int, val int64, uncontended bool) {
 			if init {
 				break
 			}
-
 		} else if s.casBase(s.base, s.base+val) {
 			break
 		}
